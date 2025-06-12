@@ -4,7 +4,8 @@ A secure and professional-grade backend authentication system built using **Spri
 ---
 # 🎯 Features
 ✅ User registration and login with validation  
-✅ JWT-based stateless authentication  
+✅ JWT-based stateless authentication 
+✅ JWT-token is storing in cookies
 ✅ Secure profile access using token  
 ✅ Email verification with OTP  
 ✅ Reset password via OTP  
@@ -161,6 +162,7 @@ jwt.expiration=86400000
 ## 📌 TODO / Future Enhancements
 
 - [ ] 🔄 Refresh token endpoint
+- [ ] 🙋 Adding UI for better user experience 
 - [ ] 🔓 Logout endpoint (client-side JWT destroy)
 - [ ] 👮 Admin-specific role-based routes
 
