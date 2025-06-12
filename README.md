@@ -154,7 +154,7 @@ jwt.expiration=86400000
 
 ## 📸 Screenshots
 
-> _You can add screenshots of Postman, JWT token, and terminal response here._
+
 
 ---
 
@@ -163,14 +163,13 @@ jwt.expiration=86400000
 - [ ] 🔄 Refresh token endpoint
 - [ ] 🔓 Logout endpoint (client-side JWT destroy)
 - [ ] 👮 Admin-specific role-based routes
-- [ ] 📧 Add email templates for OTP
 
 ---
 
 ## 🙋 Author
 
 **Rustam** – Final Year B.Tech Student  
-🔗 GitHub: [@yourGitHubUsername](https://github.com/yourGitHubUsername)
+🔗 GitHub: [@RustamPoonia](https://github.com/RustamPoonia/AuthX.git)
 
 ---
 
