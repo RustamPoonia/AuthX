@@ -1,8 +1,8 @@
-🔐 AuthX – Secure JWT Authentication API
+# 🔐 AuthX – Secure JWT Authentication API
 
 A secure and professional-grade backend authentication system built using **Spring Boot**, **Spring Security**, and **JWT (JSON Web Token)**. Designed to demonstrate best practices in stateless REST API development with token-based authentication and email verification.
-
- 🎯 Features
+---
+# 🎯 Features
 ✅ User registration and login with validation  
 ✅ JWT-based stateless authentication  
 ✅ Secure profile access using token  
@@ -11,8 +11,8 @@ A secure and professional-grade backend authentication system built using **Spri
 ✅ Modular and clean project structure  
 ✅ MySQL integration  
 ✅ CORS enabled for frontend access
-
- 🛠️ Tech Stack
+---
+#🛠️ Tech Stack
 
 - **Java 17**
 - **Spring Boot 3**
