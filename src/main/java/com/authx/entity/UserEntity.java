@@ -41,6 +41,7 @@ public class UserEntity {
     private Boolean isAccountVerified;
     private Long verifyOtpExpired;
     private String resetPassword;
+    private String resetOtp;
     private Long resetOtpExpiredAt;
 
     @CreationTimestamp
