@@ -154,7 +154,14 @@ jwt.expiration=86400000
 ---
 
 ## 📸 Screenshots
-
+![profile](https://github.com/user-attachments/assets/924fb265-5ddc-4352-9ebc-4764e855b6ac)
+#Profile request
+---
+![loginrequest](https://github.com/user-attachments/assets/5caf0829-0dae-4470-8075-4247a1f590ba)
+#Login Request
+---
+![register request](https://github.com/user-attachments/assets/34a6d2a7-7469-46ab-9e2c-5963d92a5eb6)
+#Register Request
 
 
 ---
