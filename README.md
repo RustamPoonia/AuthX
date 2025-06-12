@@ -1,146 +1,183 @@
+🔐 AuthX – Secure JWT Authentication API
 
-### ✅ `README.md` for `AuthX – Spring Boot JWT Authentication API`
+A secure and professional-grade backend authentication system built using **Spring Boot**, **Spring Security**, and **JWT (JSON Web Token)**. Designed to demonstrate best practices in stateless REST API development with token-based authentication and email verification.
 
-```markdown
-# AuthX 🔐
+ 🎯 Features
+✅ User registration and login with validation  
+✅ JWT-based stateless authentication  
+✅ Secure profile access using token  
+✅ Email verification with OTP  
+✅ Reset password via OTP  
+✅ Modular and clean project structure  
+✅ MySQL integration  
+✅ CORS enabled for frontend access
 
-**AuthX** is a secure and scalable **Spring Boot REST API** project for user authentication and authorization using **JWT (JSON Web Tokens)**. This project demonstrates modern authentication practices with token-based security, BCrypt password encoding, and stateless session handling.
+ 🛠️ Tech Stack
 
----
+- **Java 17**
+- **Spring Boot 3**
+- **Spring Security**
+- **JWT (jjwt)**
+- **MySQL**
+- **Maven**
+- **Postman** (for testing)
 
-## 📌 Features
-
-- ✅ User Registration & Login APIs
-- 🔐 JWT-based Authentication & Authorization
-- 🧠 Role-Based Access Control (RBAC)
-- 🔒 Password Hashing using BCrypt
-- ⚙️ Stateless API with Spring Security
-- 📄 Token Validation Filter
-- 🚫 Custom 401/403 Error Handling
-
----
-
-## 🧰 Tech Stack
-
-| Layer            | Technology              |
-|------------------|--------------------------|
-| Backend          | Spring Boot 3, Java 17+  |
-| Security         | Spring Security, JWT     |
-| Database         | MySQL (or H2 for dev)    |
-| ORM              | Spring Data JPA          |
-| Build Tool       | Maven                    |
-| Others           | Lombok, MapStruct (opt)  |
-
----
-
-## 📂 Project Structure
+ 📦 Project Structure
 
 ```
-
 src/
-└── main/
-├── java/
-│   └── com.rustam.JWT/
-│       ├── controller/
-│       ├── services/
-│       ├── entity/
-│       ├── repository/
-│       ├── Jwtconfig/       <-- JWT Filter & Utils
-│       └── configuration/   <-- Spring Security config
-└── resources/
-├── application.properties
-└── schema.sql / data.sql (optional)
-
-````
-
----
-
-## 🚀 Getting Started
-
-### 🔧 Prerequisites
-- Java 17+
-- Maven
-- MySQL (or H2 for testing)
-- Postman or any REST client
-
-### ⚙️ Run the project
-
-```bash
-# Clone the repository
-git clone https://github.com/YourUsername/your-repo-name.git
-
-# Navigate to project directory
-cd authx
-
-# Build & run the project
-mvn spring-boot:run
-````
-
----
-
-## 🔑 API Endpoints
-
-### 👥 Auth APIs
-
-| Method | Endpoint             | Description                      |
-| ------ | -------------------- | -------------------------------- |
-| POST   | `/api/auth/register` | Register new user                |
-| POST   | `/api/auth/login`    | Authenticate user and return JWT |
-
-### 🔐 Protected APIs
-
-| Method | Endpoint          | Access      |
-| ------ | ----------------- | ----------- |
-| GET    | `/api/user/info`  | ROLE\_USER  |
-| GET    | `/api/admin/info` | ROLE\_ADMIN |
-
-> JWT must be sent in the `Authorization` header:
-> `Authorization: Bearer <your-token>`
-
----
-
-## 🔒 Security Overview
-
-* All endpoints (except `/api/auth/**`) are protected
-* JWT is validated for every request via a custom filter
-* User roles are verified before accessing protected routes
-
----
-
-## 📸 Screenshots (Optional)
-
-*Add screenshots of Postman requests and responses here*
-
----
-
-## 🤝 Contribution
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
----
-
-## 📃 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 📬 Contact
-
-Rustam Poonia – [LinkedIn](https://www.linkedin.com/in/rustam-poonia)
-GitHub: [@RustamPoonia](https://github.com/RustamPoonia)
-
----
-
+├── configurations/            # Security and JWT filter configs
+├── controller/                # REST Controllers (Auth, Profile)
+├── entity/                    # User entity
+├── repository/                # Spring Data JPA repositories
+├── services/                  # Business logic
+├── userdto/                   # DTOs: Login, Register, AuthResponse, etc.
+├── jwt/                       # JWT token utility classes
+└── resources/                 # application.properties
 ```
 
 ---
 
-### 📦 To Use It:
+## 🔗 API Endpoints
 
-1. Save as `README.md` in your project root.
-2. Update links (`GitHub`, `LinkedIn`, `License`).
-3. Add screenshots or API docs if you want to make it standout.
+### 🔸 Authentication
 
-Let me know if you're using **H2**, want to add **Swagger UI**, or need a `POSTMAN` collection – I’ll generate those too.
+#### ▶️ Register User
+```http
+POST /api/v1.0/auth/register
 ```
+
+#### ▶️ Login User
+```http
+POST /login
+```
+
+#### ✅ Check Authentication
+```http
+GET /is-authenticated
+```
+Returns `true` if user is authenticated using JWT.
+
+---
+
+### 👤 Profile
+
+#### 🔎 Get Profile (Protected)
+```http
+GET /api/v1.0/profile
+```
+**Headers**
+| Key            | Value                  |
+|----------------|------------------------|
+| Authorization  | Bearer JWT_TOKEN_HERE  |
+
+---
+
+### 🔐 Email Verification & Password Reset
+
+#### 📤 Send Email Verification OTP  
+```http
+POST /send-otp
+```
+**Headers**
+| Key           | Value                 |
+|---------------|-----------------------|
+| Authorization | Bearer JWT_TOKEN_HERE |
+
+---
+
+#### ✅ Verify Email with OTP  
+```http
+POST /verify-email
+```
+**Headers**
+| Key           | Value                 |
+|---------------|-----------------------|
+| Authorization | Bearer JWT_TOKEN_HERE |
+
+**Body**
+```json
+{
+  "otp": "123456"
+}
+```
+
+---
+
+#### 🔁 Send Reset Password OTP  
+```http
+POST /send-reset-otp?email=user@example.com
+```
+
+---
+
+#### 🔒 Reset Password Using OTP  
+```http
+POST /reset-password
+```
+**Body**
+```json
+{
+  "email": "user@example.com",
+  "otp": "123456",
+  "newPassword": "newSecurePassword"
+}
+```
+
+---
+
+## 📁 Configuration (`application.properties`)
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/authx_db
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+
+jwt.secret=your_jwt_secret
+jwt.expiration=86400000
+```
+
+---
+
+## 🧪 Postman Workflow
+
+1. Register → `/auth/register`
+2. Login → `/login` → copy `token`
+3. Access `/profile` with header:
+   ```http
+   Authorization: Bearer <JWT_TOKEN>
+   ```
+4. Email Verification → `/send-otp`, `/verify-email`
+5. Forgot Password → `/send-reset-otp`, `/reset-password`
+
+---
+
+## 📸 Screenshots
+
+> _You can add screenshots of Postman, JWT token, and terminal response here._
+
+---
+
+## 📌 TODO / Future Enhancements
+
+- [ ] 🔄 Refresh token endpoint
+- [ ] 🔓 Logout endpoint (client-side JWT destroy)
+- [ ] 👮 Admin-specific role-based routes
+- [ ] 📧 Add email templates for OTP
+
+---
+
+## 🙋 Author
+
+**Rustam** – Final Year B.Tech Student  
+🔗 GitHub: [@yourGitHubUsername](https://github.com/yourGitHubUsername)
+
+---
+
+## 📄 License
+
+This project is released under the [MIT License](LICENSE). Feel free to use and contribute.
+
+---
+
+🟦🟩🟨🟧🟥🟪 **Thanks for checking out AuthX!**
