@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.authx.entity.UserEntity;
+import com.authx.model.Role;
 import com.authx.repository.UserRepository;
 import com.authx.userdto.RegisterRequest;
 import com.authx.userdto.RegisterResponse;
@@ -42,7 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
     private RegisterResponse convertToProfileResponse(UserEntity newprofile) {
            return RegisterResponse.builder()
                         .email(newprofile.getEmail())
-                        .isAccountVerified(false)
+                        .isAccountVerified(newprofile.getIsAccountVerified())
                         .name(newprofile.getName())
                         .userId(newprofile.getUserId())
                         .build();
@@ -58,6 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
                     .email(request.getEmail())
                     .name(request.getName())
                     .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.ROLE_USER)
                     .isAccountVerified(false)
                     .verifyOtp(null)
                     .verifyOtpExpired(0L)
@@ -147,7 +149,7 @@ public class ProfileServiceImpl implements ProfileService {
       UserEntity existingUser =  userRepo.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Username not found:"+email));
 
-            if(existingUser.getVerifyOtp() == null && !existingUser.getVerifyOtp().equals(otp)){
+            if(existingUser.getVerifyOtp() == null || !existingUser.getVerifyOtp().equals(otp)){
                      throw new RuntimeException("Invalid OTP");   
             }
             if( existingUser.getVerifyOtpExpired() < System.currentTimeMillis()){
@@ -161,13 +163,13 @@ public class ProfileServiceImpl implements ProfileService {
                userRepo.save(existingUser);            
    }
 
-    @Override
-    public String getLoggedInUserId(String email) {
-        UserEntity existingUser = userRepo.findByEmail(email)
-                     .orElseThrow(() -> new UsernameNotFoundException("User not found :"+email));
+   //  @Override
+   //  public String getLoggedInUserId(String email) {
+   //      UserEntity existingUser = userRepo.findByEmail(email)
+   //                   .orElseThrow(() -> new UsernameNotFoundException("User not found :"+email));
          
-       return existingUser.getUserId();
+   //     return existingUser.getUserId();
     
-                  }
+   //                }
 
 }

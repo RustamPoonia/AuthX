@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims; 
+import com.authx.entity.UserEntity;
+import com.authx.security.CustomUserDetails;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -27,18 +30,26 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails; // ✅ Safe
+        UserEntity user = customUserDetails.getUserEntity();
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().name());
         return createToken(claims, userDetails.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
+        try {
+            return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+        } catch (Exception e) {
+            throw new RuntimeException("Jwt toke is expired");
+        }
+        
     }
 
     private Claims extractAllClaims(String token) {

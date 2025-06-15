@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,12 +27,17 @@ import com.authx.services.ProfileService;
 import com.authx.userdto.AuthRequest;
 import com.authx.userdto.AuthResponse;
 import com.authx.userdto.ResetPasswordRequest;
+import com.authx.userdto.Verifyemailrequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User APIs",description = "User Login, Password Update, Email Verification, Sending OTP")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -45,6 +49,7 @@ public class AuthController {
     private final ProfileService profileService;
 
     @PostMapping("/login")
+    @Operation(summary = "Login user with username and password")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
         try {
@@ -55,7 +60,7 @@ public class AuthController {
                     .httpOnly(true)
                     .path("/")
                     .maxAge(Duration.ofDays(1))
-                    .sameSite("Strict")
+                    .sameSite("Lax")
                     .build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                     .body(new AuthResponse(request.getEmail(), token));
@@ -83,12 +88,14 @@ public class AuthController {
     }
 
     @GetMapping("/is-authenticated")
+    @Operation(summary = "checks is user authenticated or not")
     public ResponseEntity<Boolean> isAuthenticated(
             @CurrentSecurityContext(expression = "authentication?.name") String email) {
         return ResponseEntity.ok(email != null);
     }
 
     @PostMapping("/send-reset-otp")
+    @Operation(summary = "Send OTP for password reset")
     public void sendResetOtp(@RequestParam String email) {
         try {
             profileService.sendResetOtp(email);
@@ -98,6 +105,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
+    @Operation(summary = "Reset user password if you enter the valid OTP")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         try {
             profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
@@ -107,6 +115,7 @@ public class AuthController {
     }
 
     @PostMapping("/send-otp")
+    @Operation(summary = "Send OTP to verify user email")
     public void sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email) {
 
         try {
@@ -117,17 +126,33 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
-    public void verifyEmail(@RequestBody Map<String, Object> request,
+    @Operation(summary = "Verify user email", description = "Verify user's email address using the OTP sent to their email")
+    public ResponseEntity<String> verifyEmail(@RequestBody Verifyemailrequest request,
             @CurrentSecurityContext(expression = "authentication?.name") String email) {
 
-        if (request.get("otp").toString() == null) {
+        if (request.getOtp() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing details");
         }
         try {
-            System.out.println("try block isexecuted");
-            profileService.verifyOtp(email, request.get("otp").toString());
+            profileService.verifyOtp(email, request.getOtp());
+            return ResponseEntity.ok("Email verified successfully");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+     @PostMapping("/logout")
+     @Operation(summary = "Logout the user and clear the Jwt token")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Create a cookie with the same name and maxAge=0 to delete it
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0) // delete immediately
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("Logged out successfully");
     }
 }

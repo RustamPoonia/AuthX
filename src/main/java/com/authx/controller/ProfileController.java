@@ -11,11 +11,15 @@ import com.authx.services.EmailService;
 import com.authx.services.ProfileService;
 import com.authx.userdto.RegisterRequest;
 import com.authx.userdto.RegisterResponse;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Profile APIs",description = "New User Register and User Profile")
 public class ProfileController {
 
    private final ProfileService profileService;
@@ -24,6 +28,7 @@ public class ProfileController {
 
 
     @PostMapping("/register")
+    @Operation(summary = "Register new User")
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request)
     {
         RegisterResponse response = profileService.createProfile(request);
@@ -37,6 +42,7 @@ public class ProfileController {
     // }
 
     @GetMapping("/profile")
+    @Operation(summary = "View Users Profile Details")
     public RegisterResponse getpofile(@CurrentSecurityContext(expression = "authentication?.name") String email){
                 return profileService.getProfile(email);
 
