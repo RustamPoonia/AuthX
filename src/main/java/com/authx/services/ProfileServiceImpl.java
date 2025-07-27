@@ -59,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
                     .email(request.getEmail())
                     .name(request.getName())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ROLE_USER)
+                    .role(Role.ROLE_ADMIN)
                     .isAccountVerified(false)
                     .verifyOtp(null)
                     .verifyOtpExpired(0L)

@@ -26,7 +26,7 @@ public class AdminController {
     private final UserRepository userRepository;
 
     @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get All users form Database (Only Admin can access)")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
         List<UserEntity> users = userRepository.findAll();
